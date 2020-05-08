@@ -11,7 +11,9 @@
       <% } %>
 
     </ul>
-    <a href="http://localhost:3000/blogs/?start="> element with id="next" and href pointing to the URL of the “next page”.</a>
+    <% if(nextId != 0){ %>
+      <a id="next" href="http://localhost:3000/blogs/<%=username%>?start=<%=nextId%>">next page</a>
+    <% }%>
 
   </body>
 
