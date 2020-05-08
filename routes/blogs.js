@@ -42,21 +42,9 @@ router.get('/:username/:postid', function (req, res) {
   			//res.send(resTitle);
   			res.render('blogs', { username: givenUsername, id: givenPostid, title: resTitle, body: resBody });
   		});
-  		/*
-  		collection.find({"username":givenUsername, "postid":givenPostid}).toArray(function(err, resContent) {
-  			res.send(resContent[0].title);
-  			
-  		});*/
 
-  		//client.close();
+  		client.close();
 	});
-	
-
-	//let parsedTitle = reader.parse("Title");
-	//let parsedBody = reader.parse("Body");
-	//let resTitile = writer.render(parsedTitle);
-	//let resBody = writer.render(parsedBody);
-    
     
 
 
@@ -106,10 +94,12 @@ router.get('/:username', function (req, res) {
   				} 
   			}
 
-  			res.render('blogs', { username: givenUsername, title: resTitle, body: resBody });
+  			res.render('blogList', { username: givenUsername, title: resTitle, body: resBody });
   			
   		});
+  		client.close();
 
-})
+	});
+}
 
 module.exports = router;
