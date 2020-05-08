@@ -8,6 +8,7 @@ var MongoClient = require('mongodb').MongoClient;
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var blogsRouter = require('./routes/blogs');
+var loginRounter = require('./routes/login')
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/blogs', blogsRouter);
 app.use('/users', usersRouter);
+app.use('/login', loginRouter)
 
 // mongodb connection
 MongoClient.connect(url, function(err, client) {
