@@ -30,7 +30,7 @@ app.use('/users', usersRouter);
 app.use('/login', loginRouter)
 
 // mongodb connection
-MongoClient.connect(url, function(err, client) {
+MongoClient.connect(url, { useUnifiedTopology: true }, function(err, client) {
 	app.set('client', client);
 	console.log("Connected successfully to server");
 });
