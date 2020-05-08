@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <ul>
+      <% for(let i = 0; i < title.length; i++) { %>
+          <li><%- title[i] %> <%- body[i] %>
+          </li>
+      <% } %>
+
+    </ul>
+    <a href="http://localhost:3000/blogs/?start="> element with id="next" and href pointing to the URL of the “next page”.</a>
+
+  </body>
+
+</html>

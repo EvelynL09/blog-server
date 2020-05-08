@@ -6,7 +6,7 @@ let MongoClient = require('mongodb').MongoClient;
 
 /* GET home page. */
 router.get('/:username/:postid', function (req, res) {
-	// parameters 
+	// parameters
 	let givenUsername = req.params.username;
 	let givenPostid = parseInt(req.params.postid);
 
@@ -45,15 +45,16 @@ router.get('/:username/:postid', function (req, res) {
 
   		client.close();
 	});
-    
+
 
 
 })
 
 router.get('/:username', function (req, res) {
-	// parameters 
+	// parameters
 	let givenUsername = req.params.username;
-
+	// /blog/cs144?start=3
+	let start = req.query.start ? parseInt(req.query.start) : 1;
 
 	// markdown initialization
 	let reader = new commonmark.Parser();
@@ -71,7 +72,8 @@ router.get('/:username', function (req, res) {
   		let collection = db.collection('Posts');
 
   		// Find some documents with certain conditions
-  		collection.find({"username":givenUsername}).toArray(function(err, resContent) {
+		// db.collection.find( { $query: {}, $orderby: { age : -1 } } )
+  		collection.find({"username":givenUsername, "postid":{$gte:start}},{"sort":"postid"}).toArray(function(err, resContent) {
   			if(err){
   				throw err;
   			}
@@ -89,17 +91,14 @@ router.get('/:username', function (req, res) {
   				let curBody = writer.render(parsedBody);
   				resTitle.push(curTitle);
   				resBody.push(curBody);
-  				if(i==4){
-  					break;
-  				} 
   			}
 
-  			res.render('blogList', { username: givenUsername, title: resTitle, body: resBody });
-  			
+  			res.render('blogsList', { username: givenUsername, , title: resTitle, body: resBody });
+
   		});
   		client.close();
 
 	});
-}
+})
 
 module.exports = router;
