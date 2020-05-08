@@ -7,7 +7,7 @@ router.get('/:username/:postid', function (req, res) {
 })
 
 router.get('/:username', function (req, res) {
-    res.render('blogs', { username: req.params.username, id: "req.params.postid" });
+    res.render('blogs', { username: req.params.username, id: "Hi, I am ID" });
 })
 
 module.exports = router;
