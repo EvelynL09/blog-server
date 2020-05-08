@@ -37,7 +37,7 @@ router.get('/:username/:postid', function (req, res) {
   			let parsedBody = reader.parse(resContent.body);
   			let resBody = writer.render(parsedBody);
   			//res.send(resTitle);
-  			res.render('blogs', { username: givenUsername, id: givenPostid, title: parsedTitle, body: parsedBody });
+  			res.render('blogs', { username: givenUsername, id: givenPostid, title: resTitle, body: resBody });
   		});
   		/*
   		collection.find({"username":givenUsername, "postid":givenPostid}).toArray(function(err, resContent) {
