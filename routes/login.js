@@ -27,37 +27,27 @@ router.post('/', function (req, res, next){
   		if(resContent == null){
 			res.status(401);
 			//TODO: check if needed parameters
-			res.render('login');
+			res.render('login', {username: "", password: "", redirect: ""});
   		}
 		else{
 			let dbPassword = resContent.password;
+			bcrypt.compare(givenPassword, dbPassword, function(err, ifMatched) {
+				if(err){
+					throw err;
+				}
+				// password correct. success
+				
+				if(ifMatched){
+					res.send("Correct password");
 
-			bcrypt.genSalt(10, function(err, salt) {
-    			bcrypt.hash("password", salt, function(err, hash) {
-    				res.send(hash);
-    				/*
-        			// Store hash in your password DB.
-        			bcrypt.compare(dbPassword, hash, function(err, ifMatched) {
-						if(err){
-							throw err;
-						}
+				}
+				// unsuccess
+				else{
+					res.send("unsuccess");
 
-						// password correct. success
-						if(ifMatched){
-							res.send("Correct password" + "\n" + dbPassword+"\n"+ hash);
+				}
 
-						}
-						// unsuccess
-						else{
-							res.send("unsuccess"+ "\n" + dbPassword+"\n"+ hash);
-
-						}
-
-
-					});*/
-    			});
 			});
-
 			
 
 		}
