@@ -3,16 +3,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var MongoClient = require('mongodb').MongoClient;
+//use the db.js module to establish the initial connection:
+var client = require('./db');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var blogsRouter = require('./routes/blogs');
-var loginRounter = require('./routes/login')
 
 var app = express();
-
-let url = 'mongodb://localhost:27017';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,12 +25,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/blogs', blogsRouter);
 app.use('/users', usersRouter);
-app.use('/login', loginRouter)
 
-// mongodb connection
-MongoClient.connect(url, { useUnifiedTopology: true }, function(err, client) {
-	app.set('client', client);
-	console.log("Connected successfully to server");
+// Connect to Mongo on start
+client.connect('mongodb://localhost:27017', function (err) {
+    if (err) {
+        console.log('Unable to connect to Mongo.');
+        process.exit(1);
+    }
 });
 
 // catch 404 and forward to error handler
@@ -50,5 +49,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;

@@ -2,7 +2,7 @@
 let express = require('express');
 let router = express.Router();
 let commonmark = require('commonmark');
-let MongoClient = require('mongodb').MongoClient;
+let client = require('../db');
 
 /* GET home page. */
 router.get('/:username/:postid', function (req, res) {
@@ -15,18 +15,8 @@ router.get('/:username/:postid', function (req, res) {
 	let reader = new commonmark.Parser();
 	let writer = new commonmark.HtmlRenderer();
 
-	// db initialization
-	let url = 'mongodb://localhost:27017';
-
-	// db connection
-	let client = req.app.get('client');
-	let db = client.db('BlogServer');
-
-	//Get the markdown body and title using mongodb
-	// Get the documents collection
-  	let collection = db.collection('Posts');
-
   	// Find some documents with certain conditions
+	let collection = client.dbCollection('BlogServer', 'Posts');
   	collection.findOne({"username":givenUsername, "postid": givenPostid}, function(err, resContent) {
   		if(err){
   			throw err;
@@ -43,7 +33,7 @@ router.get('/:username/:postid', function (req, res) {
 	  		let resBody = writer.render(parsedBody);
 	  		res.render('blogs', { username: givenUsername, id: givenPostid, title: resTitle, body: resBody });
 		}
-  		
+
 
 	});
 
@@ -61,19 +51,8 @@ router.get('/:username', function (req, res) {
 	let reader = new commonmark.Parser();
 	let writer = new commonmark.HtmlRenderer();
 
-	// db initialization
-	let url = 'mongodb://localhost:27017';
-
-	// db connection
-	let client = req.app.get('client');
-	let db = client.db('BlogServer');
-
-	//Get the markdown body and title using mongodb
- 	// Get the documents collection
-  	let collection = db.collection('Posts');
-
   	// Find some documents with certain conditions
-	// db.collection.find( { $query: {}, $orderby: { age : -1 } } )
+	let collection = client.dbCollection('BlogServer', 'Posts');
   	collection.find({"username":givenUsername, "postid":{$gte:start}},{"sort":"postid"}).toArray(function(err, resContent) {
   		if(err){
   			throw err;
@@ -93,7 +72,7 @@ router.get('/:username', function (req, res) {
   				let curTitle = writer.render(parsedTitle);
   				let parsedBody = reader.parse(resContent[i].body);
   				let curBody = writer.render(parsedBody);
-  				resTitle.push(curTitle);	
+  				resTitle.push(curTitle);
   				resBody.push(curBody);
 	  		}
 
