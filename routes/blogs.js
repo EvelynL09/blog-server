@@ -5,7 +5,7 @@ let commonmark = require('commonmark');
 let client = require('../db');
 
 /* GET home page. */
-router.get('/:username/:postid', function (req, res) {
+router.get('/:username/:postid', function (req, res, next) {
 	// parameters
 	let givenUsername = req.params.username;
 	let givenPostid = parseInt(req.params.postid);
@@ -41,7 +41,7 @@ router.get('/:username/:postid', function (req, res) {
 
 })
 
-router.get('/:username', function (req, res) {
+router.get('/:username', function (req, res, next) {
 	// parameters
 	let givenUsername = req.params.username;
 	// /blog/cs144?start=3
