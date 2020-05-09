@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var blogsRouter = require('./routes/blogs');
 var loginRouter = require('./routes/login');
+var apiRouter = require('./routes/api');
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use('/', indexRouter);
 app.use('/blogs', blogsRouter);
 app.use('/login', loginRouter);
 app.use('/users', usersRouter);
+app.use('/api', apiRouter);
 
 // Connect to Mongo on start
 client.connect('mongodb://localhost:27017', function (err) {
