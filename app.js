@@ -9,6 +9,7 @@ var client = require('./db');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var blogsRouter = require('./routes/blogs');
+var loginRouter = require('./routes/login');
 
 var app = express();
 
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/blogs', blogsRouter);
+app.use('/login', loginRouter);
 app.use('/users', usersRouter);
 
 // Connect to Mongo on start
