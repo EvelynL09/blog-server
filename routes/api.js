@@ -46,7 +46,7 @@ async function checkValidation(req, res) {
 router.get('/:username', async function (req, res, next) {
 	let givenUsername = req.params.username;
 	if(givenUsername==null){
-		res.status(200);
+		res.status(404);
  		//res.json(result);
 		res.send("Miss Username");
 
@@ -55,36 +55,62 @@ router.get('/:username', async function (req, res, next) {
 		
 		let ifValidate = await checkValidation(req, res);
 		if(ifValidate){
-			res.send("validate");
+			console.log("validate");
+			let collection = client.dbCollection('BlogServer', 'Posts');
+			collection.find({"username":givenUsername}).toArray(function(err, resContent) {
+  				if(err){
+  					throw err;
+  				}
+  				if(resContent.length == 0){
+  					console.log("No posts for this user");
+  					//???????????????????
+					res.status(404);
+					//TODO: better error page
+					res.render('error', { message: 'Username not found!', error: {status: "Error Code: 404", stack:""}});
+  				}
+				else{
+					res.status(200).json(resContent);
+				}
+			});
 		}
 
-		/*
-		let collection = client.dbCollection('BlogServer', 'Posts');
-		collection.find({"username":givenUsername}).toArray(function(err, resContent) {
-  		if(err){
-  			throw err;
-  		}
-  		if(resContent.length == 0){
-			res.status(404);
-			//TODO: better error page
-			res.render('error', { message: 'Username not found!', error: {status: "Error Code: 404", stack:""}});
-  		}
-		else{
-			res.JSON(resContent);
-		}
-
-	});*/
 	}
-	
-
-
-	
 
 })
 
-router.get('/:username/:postid', function(req, res, next){
+router.get('/:username/:postid', async function(req, res, next){
 	let givenUsername = req.params.username;
 	let givenPostid = parseInt(req.params.postid);
+	if(givenUsername==null||isNaN(givenPostid)){
+		res.status(404);
+ 		//res.json(result);
+		res.send("Miss Username or Miss/Invalid postid");
+
+	}
+	else{
+		
+		let ifValidate = await checkValidation(req, res);
+		if(ifValidate){
+			console.log("validate");
+			let collection = client.dbCollection('BlogServer', 'Posts');
+			collection.findOne({"username":givenUsername, "postid": givenPostid}, function(err, resContent) {
+  				if(err){
+  					throw err;
+  				}
+  				if(resContent==null){
+  					console.log("No such posts for this user");
+  					//???????????????????
+					res.status(404);
+					//TODO: better error page
+					res.render('error', { message: 'No such post for this user', error: {status: "Error Code: 404", stack:""}});
+  				}
+				else{
+					res.status(200).json(resContent);
+				}
+			});
+		}
+
+	}
 
 })
 
@@ -97,9 +123,36 @@ router.put('/:username/:postid', function(req, res, next){
 
 })
 
-router.delete('/:username/:postid', function(req, res, next){
+router.delete('/:username/:postid', async function(req, res, next){
 	let givenUsername = req.params.username;
 	let givenPostid = parseInt(req.params.postid);
+	if(givenUsername==null||isNaN(givenPostid)){
+		res.status(404);
+ 		//res.json(result);
+		res.send("Miss Username or Miss/Invalid postid");
+	}
+	else{
+		
+		let ifValidate = await checkValidation(req, res);
+		if(ifValidate){
+			console.log("validate");
+			let collection = client.dbCollection('BlogServer', 'Posts');
+			collection.deleteOne({"username":givenUsername, "postid": givenPostid}, function(err, resContent) {
+  				if(err){
+  					throw err;
+  				}
+  				if(resContent.deletedCount==1){
+  					console.log("Deleted Successfully");
+					res.sendStatus(204);
+					
+  				}
+				else{
+					res.sendStatus(400);
+				}
+			});
+		}
+
+	}
 
 })
 

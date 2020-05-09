@@ -40,7 +40,7 @@ router.post('/', function (req, res, next){
 				if(ifMatched){
 					let secretKey = "C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c";
 					//let expiration = Math.floor(Date.now() / 1000) + 2*(60 * 60);
-					let expiration = Math.floor(Date.now() / 1000) + (0.2 * 60);
+					let expiration = Math.floor(Date.now() / 1000) + 2*(0.5 * 60);
 
 					//start sign
 					jwt.sign({"exp": expiration, "usr": givenUsername}, // payload
