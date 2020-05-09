@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 let bcrypt = require('bcryptjs');
 let client = require('../db');
+let jwt = require('jsonwebtoken');
 
 
 router.get('/', function (req, res, next) {
@@ -26,7 +27,6 @@ router.post('/', function (req, res, next){
   		}
   		if(resContent == null){
 			res.status(401);
-			//TODO: check if needed parameters
 			res.render('login', {username: "", password: "", redirect: ""});
   		}
 		else{
@@ -38,18 +38,42 @@ router.post('/', function (req, res, next){
 				// password correct. success
 				
 				if(ifMatched){
-					res.send("Correct password");
+					let secretKey = "C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c";
+					//let expiration = Math.floor(Date.now() / 1000) + 2*(60 * 60);
+					let expiration = Math.floor(Date.now() / 1000) + 2*(0.5 * 60);
+
+					//start sign
+					jwt.sign({"exp": expiration, "usr": givenUsername}, // payload
+						     secretKey, 
+						     {header: {"alg": "HS256", "typ": "JWT" }},
+						     function(err, token) { //header
+
+							 	//inside sign
+								if(err){
+									throw err;
+								}
+  								//console.log(token);
+  								res.cookie('jwt', token);
+  								
+  								//redirect
+  								if(givenRedirect){
+  									res.redirect(givenRedirect);
+  								}
+  								else{
+  									//set status code and response body
+  									res.status(200).send("The authentication was successful");
+  								}
+					});
+					// end sign
 
 				}
 				// unsuccess
 				else{
-					res.send("unsuccess");
-
+					res.status(401);
+					res.render('login', {username: "", password: "", redirect: ""});
 				}
-
 			});
 			
-
 		}
 
 
