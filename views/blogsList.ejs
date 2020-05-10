@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>BlogsList Page</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <ul>
       <% for(let i = 0; i < title.length; i++) { %>
-          <li><%- title[i] %> <%- body[i] %>
+          <li>
+            <%- title[i] %>
+        </p>- Created: <%- created[i] %> , Modified: <%- modified[i] %><p>
+            <%- body[i] %>
           </li>
       <% } %>
 
     </ul>
     <% if(nextId != 0){ %>
-      <a id="next" href="http://localhost:3000/blogs/<%=username%>?start=<%=nextId%>">next page</a>
+      <a id="next" href="http://localhost:3000/blog/<%=username%>?start=<%=nextId%>">next page</a>
     <% }%>
 
   </body>

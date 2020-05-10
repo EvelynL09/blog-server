@@ -8,7 +8,7 @@ var client = require('./db');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var blogsRouter = require('./routes/blogs');
+var blogsRouter = require('./routes/blog');
 var loginRouter = require('./routes/login');
 var apiRouter = require('./routes/api');
 
@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/blogs', blogsRouter);
+app.use('/blog', blogsRouter);
 app.use('/login', loginRouter);
 app.use('/users', usersRouter);
 app.use('/api', apiRouter);

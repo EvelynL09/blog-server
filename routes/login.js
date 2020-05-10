@@ -10,7 +10,6 @@ router.get('/', function (req, res, next) {
 	let givenPassword = req.query.password;
 	let givenRedirect = req.query.redirect;
 	res.render('login', { username: givenUsername, password: givenPassword, redirect: givenRedirect });
-
 })
 
 
@@ -20,23 +19,27 @@ router.post('/', function (req, res, next){
 	let givenRedirect = req.body.redirect;
 	let collection = client.dbCollection('BlogServer', 'Users');
 
-
 	collection.findOne({"username":givenUsername}, function(err, resContent) {
   		if(err){
-  			throw err;
+			console.log("Database FindOne Error.");
+  			res.sendStatus(400);
   		}
+		//If the records do not match,
   		if(resContent == null){
+			//the server must return the status code “401 (Unauthorized)”
 			res.status(401);
-			res.render('login', {username: "", password: "", redirect: ""});
+			//and an HTML form with username and password input fields in the response body.
+			res.render('login', {username: givenUsername, password: givenPassword, redirect: givenRedirect});
   		}
+		// Set an authentication session cookie in JSON Web Token (JWT)
 		else{
 			let dbPassword = resContent.password;
 			bcrypt.compare(givenPassword, dbPassword, function(err, ifMatched) {
 				if(err){
-					throw err;
+					console.log("Bcrypt Compare Error.");
+		  			res.sendStatus(400);
 				}
 				// password correct. success
-
 				if(ifMatched){
 					let secretKey = "C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c";
 					let expiration = Math.floor(Date.now() / 1000) + 2*(60 * 60);//2hrs
@@ -47,31 +50,31 @@ router.post('/', function (req, res, next){
 						     secretKey,
 						     {header: {"alg": "HS256", "typ": "JWT" }},
 						     function(err, token) { //header
-
 							 	//inside sign
 								if(err){
-									throw err;
+									console.log("JWT Sign Error.");
+						  			res.sendStatus(400);
 								}
   								//console.log(token);
   								res.cookie('jwt', token);
 
-  								//redirect
+  								//redirect to redirect if it was provided in the request or
   								if(givenRedirect){
   									res.redirect(givenRedirect);
   								}
   								else{
-  									//set status code and response body
+									//return status code “200 (OK)” with the body saying that the authentication was successful.
   									res.status(200).send("The authentication was successful");
   								}
 					});
 					// end sign
-
-
 				}
 				// unsuccess
 				else{
+					//the server must return the status code “401 (Unauthorized)”
 					res.status(401);
-					res.render('login', {username: "", password: "", redirect: ""});
+					//and an HTML form with username and password input fields in the response body.
+					res.render('login', {username: givenUsername, password: givenPassword, redirect: givenRedirect});
 				}
 			});
 
