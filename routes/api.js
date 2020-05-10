@@ -154,6 +154,40 @@ router.post('/:username/:postid', function(req, res, next){
 })
 
 router.put('/:username/:postid', function(req, res, next){
+	let givenUsername = req.params.username;
+	let givenPostid = parseInt(req.params.postid);
+	let givenTitle = req.body.title;
+	let givenBody = req.body.body;
+	let currTime = new Date();
+	if(givenUsername==null||isNaN(givenPostid)){
+		res.sendStatus(400);
+		res.send("Missing Username or Invalid postid");
+	}
+	else{
+		let ifValidate = await checkValidation(req, res);
+		if(ifValidate){
+			let collection = client.dbCollection('BlogServer', 'Posts');
+			collection.updateOne({"username":givenUsername, "postid": givenPostid}, 
+								 { $set: {"title": givenTitle, "body":givenBody, "modified":currTime.getTime()}}, 
+								 function(err, resContent) {
+
+      								if(err){
+                						console.log("Updated Error");
+                        				res.sendStatus(400);
+      								}
+      								if(resContent.modifiedCount == 1){
+      									console.log("Updated successfully");
+                						res.sendStatus(200);
+      								}
+      								else{
+      									console.log("Updated fails");
+      									res.sendStatus(400);
+      								}
+            	
+			});
+		}
+
+	}
 
 })
 
