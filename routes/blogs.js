@@ -46,7 +46,6 @@ router.get('/:username', function (req, res, next) {
 	let givenUsername = req.params.username;
 	// /blog/cs144?start=3
 	let start = req.query.start ? parseInt(req.query.start) : 1;
-
 	// markdown initialization
 	let reader = new commonmark.Parser();
 	let writer = new commonmark.HtmlRenderer();
