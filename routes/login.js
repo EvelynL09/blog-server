@@ -20,7 +20,7 @@ router.post('/', function (req, res, next){
 	let givenRedirect = req.body.redirect;
 	let collection = client.dbCollection('BlogServer', 'Users');
 
-	
+
 	collection.findOne({"username":givenUsername}, function(err, resContent) {
   		if(err){
   			throw err;
@@ -36,15 +36,15 @@ router.post('/', function (req, res, next){
 					throw err;
 				}
 				// password correct. success
-				
+
 				if(ifMatched){
 					let secretKey = "C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c";
-					//let expiration = Math.floor(Date.now() / 1000) + 2*(60 * 60);
-					let expiration = Math.floor(Date.now() / 1000) + 2*(0.5 * 60);
+					let expiration = Math.floor(Date.now() / 1000) + 2*(60 * 60);//2hrs
+					// let expiration = Math.floor(Date.now() / 1000) + 2*(0.5 * 60);//1min
 
 					//start sign
 					jwt.sign({"exp": expiration, "usr": givenUsername}, // payload
-						     secretKey, 
+						     secretKey,
 						     {header: {"alg": "HS256", "typ": "JWT" }},
 						     function(err, token) { //header
 
@@ -54,7 +54,7 @@ router.post('/', function (req, res, next){
 								}
   								//console.log(token);
   								res.cookie('jwt', token);
-  								
+
   								//redirect
   								if(givenRedirect){
   									res.redirect(givenRedirect);
@@ -74,7 +74,7 @@ router.post('/', function (req, res, next){
 					res.render('login', {username: "", password: "", redirect: ""});
 				}
 			});
-			
+
 		}
 
 

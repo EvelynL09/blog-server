@@ -37,22 +37,20 @@ async function checkValidation(req, res) {
 		} catch(error){
 			res.status(401).send('Invalid Cookie'); //Verification fail or expired
     		return false;
-		}	
+		}
 	}
-	
+
 	return resBoolean;
 }
 
 router.get('/:username', async function (req, res, next) {
 	let givenUsername = req.params.username;
 	if(givenUsername==null){
-		res.status(404);
- 		//res.json(result);
-		res.send("Miss Username");
-
+		res.status(400);
+		res.send("Missing Username");
 	}
 	else{
-		
+
 		let ifValidate = await checkValidation(req, res);
 		if(ifValidate){
 			console.log("validate");
@@ -61,16 +59,7 @@ router.get('/:username', async function (req, res, next) {
   				if(err){
   					throw err;
   				}
-  				if(resContent.length == 0){
-  					console.log("No posts for this user");
-  					//???????????????????
-					res.status(404);
-					//TODO: better error page
-					res.render('error', { message: 'Username not found!', error: {status: "Error Code: 404", stack:""}});
-  				}
-				else{
-					res.status(200).json(resContent);
-				}
+				res.status(200).json(resContent);
 			});
 		}
 
@@ -82,13 +71,11 @@ router.get('/:username/:postid', async function(req, res, next){
 	let givenUsername = req.params.username;
 	let givenPostid = parseInt(req.params.postid);
 	if(givenUsername==null||isNaN(givenPostid)){
-		res.status(404);
- 		//res.json(result);
-		res.send("Miss Username or Miss/Invalid postid");
-
+		res.status(400);
+		res.send("Missing Username or Invalid postid");
 	}
 	else{
-		
+
 		let ifValidate = await checkValidation(req, res);
 		if(ifValidate){
 			console.log("validate");
@@ -127,12 +114,11 @@ router.delete('/:username/:postid', async function(req, res, next){
 	let givenUsername = req.params.username;
 	let givenPostid = parseInt(req.params.postid);
 	if(givenUsername==null||isNaN(givenPostid)){
-		res.status(404);
- 		//res.json(result);
-		res.send("Miss Username or Miss/Invalid postid");
+		res.status(400);
+		res.send("Missing Username or Invalid postid");
 	}
 	else{
-		
+
 		let ifValidate = await checkValidation(req, res);
 		if(ifValidate){
 			console.log("validate");
@@ -144,7 +130,6 @@ router.delete('/:username/:postid', async function(req, res, next){
   				if(resContent.deletedCount==1){
   					console.log("Deleted Successfully");
 					res.sendStatus(204);
-					
   				}
 				else{
 					res.sendStatus(400);
