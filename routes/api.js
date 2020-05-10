@@ -153,7 +153,7 @@ router.post('/:username/:postid', function(req, res, next){
     }
 })
 
-router.put('/:username/:postid', function(req, res, next){
+router.put('/:username/:postid', async function(req, res, next){
 	let givenUsername = req.params.username;
 	let givenPostid = parseInt(req.params.postid);
 	let givenTitle = req.body.title;
